@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>留学行业市场情报系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(71, 85, 105, 0.8);
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.85rem 1rem;
+  color: #e2e8f0;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #64748b;
+}
+
+.input:focus {
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35);
+}
+
+.button-primary,
+.button-secondary {
+  border-radius: 0.9rem;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.button-primary {
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.28), rgba(14, 165, 233, 0.2));
+  color: #ecfeff;
+}
+
+.button-primary:hover {
+  border-color: rgba(34, 211, 238, 0.7);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.38), rgba(14, 165, 233, 0.28));
+}
+
+.button-secondary {
+  border: 1px solid rgba(100, 116, 139, 0.7);
+  background: rgba(30, 41, 59, 0.7);
+  color: #f8fafc;
+}
+
+.button-secondary:hover {
+  border-color: rgba(148, 163, 184, 0.9);
+}
+
+</style>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div class="mx-auto max-w-7xl px-6 py-8">
+      <header class="relative mb-8 overflow-hidden rounded-[28px] border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 shadow-[0_24px_80px_rgba(2,8,23,0.45)]">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.12),transparent_28%),radial-gradient(circle_at_left,rgba(99,102,241,0.12),transparent_24%)]"></div>
+        <div class="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs uppercase tracking-[0.22em] text-cyan-200">
+              <span class="inline-block h-2 w-2 rounded-full bg-cyan-300"></span>
+              Market Intelligence Platform
+            </div>
+            <h1 class="mt-4 text-4xl font-semibold tracking-tight text-white">留学行业市场情报系统</h1>
+            <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              面向留学行业的市场情报 MVP，包含监测任务、AI初筛、情报库与分析报告中心。
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3 text-xs text-slate-300">
+              <span class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1">自动抓取</span>
+              <span class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1">手动录入</span>
+              <span class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1">AI 解读分析</span>
+              <span class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1">知识库沉淀</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="javascript:void(0)" target="_blank" class="button-secondary px-4 py-3 text-sm">打开 API 文档</a>
+            <button
+              id="seed-button"
+              class="rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-3 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/20"
+            >
+              重置演示数据
+            </button>
+          </div>
+        </div>
+      </header>
+
+      
+      <section class="mb-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+        <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="font-medium">当前为完整静态展示包</p>
+            <p class="mt-1 text-amber-50/80">可直接双击打开查看页面设计与示例数据；任务创建、抓取、录入、导出等写入型功能已切换为只读展示。</p>
+          </div>
+          <div class="text-xs text-amber-50/70">导出时间：2026-05-19T02:42:54</div>
+        </div>
+      </section>
+
+      <section class="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4" id="dashboard-cards"></section>
+
+      <section class="mb-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+        <div class="mb-4 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 class="text-xl font-semibold">市场营销八大模块分类台</h2>
+            <p class="mt-1 text-sm text-slate-400">按你定义的 8 个市场营销模块归类情报。左侧是分类台，右侧会解释每个模块的边界、子维度和当前情报情况。</p>
+          </div>
+          <div id="marketing-module-current" class="text-sm text-cyan-200"></div>
+        </div>
+        <div class="grid gap-6 lg:grid-cols-[460px_1fr] xl:grid-cols-[500px_1fr]">
+          <div id="marketing-module-board" class="space-y-2"></div>
+          <div id="marketing-module-detail" class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-sm text-slate-300">
+            正在加载模块说明...
+          </div>
+        </div>
+      </section>
+
+      <section class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div class="space-y-6">
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">📡</span>
+                <h2 class="text-xl font-semibold">自动抓取任务</h2>
+              </div>
+              <p class="mt-1 text-sm text-slate-400">配置留学行业关键词、竞品、国家和 RSS 来源，让系统每天自动抓取你关心的情报。</p>
+            </div>
+            <form id="task-form" class="grid gap-3 md:grid-cols-2">
+              <input class="input" name="task_name" placeholder="任务名称" required />
+              <input class="input" name="keywords" placeholder="关键词，用逗号分隔" required />
+              <input class="input" name="exclude_keywords" placeholder="排除关键词" />
+              <input class="input" name="competitors" placeholder="竞品名称" />
+              <input class="input" name="countries" placeholder="国家/地区" />
+              <select class="input" name="frequency">
+                <option value="daily">每日</option>
+                <option value="weekly">每周</option>
+              </select>
+              <input
+                class="input md:col-span-2"
+                name="custom_rss_urls"
+                placeholder="自定义 RSS 源 URL，多个用逗号分隔"
+              />
+              <input
+                class="input md:col-span-2"
+                name="platforms"
+                placeholder="平台，例如 Google Search, 新闻网站, 竞品官网, RSS"
+                required
+              />
+              <div class="flex gap-3 md:col-span-2">
+                <button class="button-primary flex-1" id="task-submit-button" type="submit">创建监测任务</button>
+                <button class="button-secondary hidden" id="task-cancel-button" type="button">取消编辑</button>
+              </div>
+            </form>
+            <div
+              id="task-run-result"
+              class="mt-4 hidden rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-4 text-sm text-cyan-100"
+            ></div>
+
+            <div id="tasks-summary" class="mt-4 text-xs text-slate-400">任务列表仅展示最近 4 条，避免版面过长。</div>
+            <div class="mt-6 overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="text-left text-slate-400">
+                  <tr>
+                    <th class="pb-3 pr-4">任务名</th>
+                    <th class="pb-3 pr-4">关键词</th>
+                    <th class="pb-3 pr-4">竞品</th>
+                    <th class="pb-3 pr-4">频率</th>
+                    <th class="pb-3 pr-4">上次抓取</th>
+                    <th class="pb-3 pr-4">状态</th>
+                    <th class="pb-3 pr-4">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="tasks-table"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">🗂️</span>
+                <h2 class="text-xl font-semibold">待处理情报池</h2>
+              </div>
+              <p class="mt-1 text-sm text-slate-400">每天自动抓取或手动上传后，先进入待处理池。你判断是否采纳，再按市场营销 8 大模块进行归库填报。</p>
+            </div>
+            <form id="intelligence-filter-form" class="mb-4 grid gap-3 md:grid-cols-4">
+              <select class="input" name="status">
+                <option value="">全部状态</option>
+                <option value="pending_review">待确认</option>
+                <option value="later">稍后处理</option>
+                <option value="ignored">已忽略</option>
+                <option value="in_library">已入库</option>
+              </select>
+              <input class="input" name="module" placeholder="模块，如 市场洞察 / 4P" />
+              <input class="input" name="source" placeholder="来源关键词" />
+              <input class="input" name="keyword" placeholder="标题/摘要关键词" />
+              <div class="flex gap-3 md:col-span-4">
+                <button class="button-primary flex-1" type="submit">筛选情报</button>
+                <button class="button-secondary" id="reset-filter-button" type="button">重置筛选</button>
+              </div>
+            </form>
+            <div id="intelligence-list" class="space-y-4"></div>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">✍️</span>
+                <h2 class="text-xl font-semibold">手动录入情报</h2>
+              </div>
+              <p class="mt-1 text-sm text-slate-400">除了自动监测外，你也可以主动录入链接、图片线索或文字内容，再送入 AI 分析。</p>
+            </div>
+            <form id="manual-form" class="space-y-3">
+              <input class="input" name="title" placeholder="情报标题" required />
+              <input class="input" name="source" placeholder="来源，默认手动录入" value="手动录入" />
+              <select class="input" name="entry_type" id="manual-entry-type">
+                <option value="text">文字录入</option>
+                <option value="link">链接录入</option>
+                <option value="image">图片录入</option>
+                <option value="voice">语音录入</option>
+              </select>
+              <div id="manual-link-fields" class="grid gap-3">
+                <input class="input" name="url" placeholder="链接 URL（链接录入时填写）" />
+                <textarea class="input min-h-24" name="link_excerpt" placeholder="链接摘要或你已提取的核心内容"></textarea>
+              </div>
+              <div id="manual-image-fields" class="grid gap-3">
+                <input class="input" name="image_url" placeholder="图片链接 / 截图地址（图片录入时填写）" />
+                <textarea class="input min-h-24" name="image_note" placeholder="请描述图片中的关键信息、文案、海报内容或截图内容"></textarea>
+              </div>
+              <div id="manual-voice-fields" class="hidden grid gap-3">
+                <input class="input" name="voice_url" placeholder="语音链接 / 音频文件地址（可选）" />
+                <textarea class="input min-h-24" name="voice_transcript" placeholder="请粘贴语音转写内容、会议纪要或口述摘要"></textarea>
+              </div>
+              <div class="grid gap-3 md:grid-cols-2">
+                <input class="input" name="competitor" placeholder="竞品名称（可选）" />
+                <input class="input" name="country" placeholder="国家/地区（可选）" />
+              </div>
+              <textarea class="input min-h-32" name="raw_content" placeholder="文字录入时请粘贴正文内容"></textarea>
+              <button class="button-primary w-full" type="submit">上传并分析</button>
+            </form>
+            <div id="manual-result" class="mt-4 hidden rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-100"></div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">🧠</span>
+                <h2 class="text-xl font-semibold">情报分析中心</h2>
+              </div>
+              <p class="mt-1 text-sm text-slate-400">这里用于解读某条情报给我们的启发、建议、知识沉淀方向，以及值得学习借鉴的动作。</p>
+            </div>
+            <div id="analysis-center" class="space-y-4 rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-sm text-slate-300">
+              <div class="rounded-xl border border-dashed border-slate-700 p-4 text-slate-400">
+                你可以在手动录入后自动进入分析中心，或在待处理情报池里点击“送入分析中心”。
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">📊</span>
+                  <h2 class="text-xl font-semibold">周报 / 月报中心</h2>
+                </div>
+                <p class="mt-1 text-sm text-slate-400">按周度或月度自动整理已归库情报，输出你的市场情报信息报告。</p>
+              </div>
+              <div class="flex gap-3">
+                <button id="weekly-report-button" class="button-secondary" type="button">生成周报</button>
+                <button id="monthly-report-button" class="button-secondary" type="button">生成月报</button>
+              </div>
+            </div>
+            <div class="mb-4 flex flex-wrap gap-3">
+              <a id="weekly-report-export-link" class="button-secondary" href="/api/reports/weekly/export" target="_blank">导出周报</a>
+              <a id="report-export-link" class="button-secondary" href="/api/reports/monthly/export" target="_blank">导出月报</a>
+            </div>
+            <pre id="report-content" class="max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl bg-slate-950 p-4 text-sm text-slate-200"></pre>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+            <div class="mb-4">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">🧩</span>
+                <h2 class="text-xl font-semibold">市场知识库</h2>
+              </div>
+              <p class="mt-1 text-sm text-slate-400">经过市场营销八大模块沉淀后，这里不再展示单条情报，而是以可复用、可复盘的知识卡片形式输出。</p>
+            </div>
+            <div class="grid gap-3" id="library-list"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    
+  <script>
+window.__STATIC_EXPORT_DATA__ = {"exported_at": "2026-05-19T02:42:54", "app_name": "留学行业市场情报系统", "snapshot": {"dashboard": {"today_count": 0, "pending_count": 16, "library_count": 4, "monthly_count": 4, "hot_keywords": ["香港留学", "港校申请", "英国硕士", "留学咨询", "英国本科申请", "香港硕士"], "marketing_modules": [{"name": "市场洞察", "count": 18, "pending_count": 16, "latest_items": [{"id": 18, "title": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "status": "pending_review", "relevance_score": 55}, {"id": 19, "title": "美国留学", "status": "pending_review", "relevance_score": 55}]}, {"name": "客户细分", "count": 1, "pending_count": 0, "latest_items": [{"id": 2, "title": "英国本科申请内容热度回升", "status": "in_library", "relevance_score": 55}]}, {"name": "目标客户选择", "count": 0, "pending_count": 0, "latest_items": []}, {"name": "定位与品牌", "count": 0, "pending_count": 0, "latest_items": []}, {"name": "市场营销组合（4P）", "count": 2, "pending_count": 0, "latest_items": [{"id": 17, "title": "竞品开始主推低预算英国本科方案", "status": "later", "relevance_score": 55}, {"id": 1, "title": "竞品推出低价香港硕士申请套餐", "status": "in_library", "relevance_score": 55}]}, {"name": "量化指标与结果追踪", "count": 0, "pending_count": 0, "latest_items": []}, {"name": "团队架构与考核指标", "count": 0, "pending_count": 0, "latest_items": []}, {"name": "黑客增长", "count": 0, "pending_count": 0, "latest_items": []}]}, "tasks": [{"id": 8, "task_name": "Webhook验证任务", "keywords": "英国留学", "exclude_keywords": "", "competitors": "", "platforms": "RSS", "custom_rss_urls": "http://127.0.0.1:8001/static/demo-feed.xml", "countries": "英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:29.949710", "owner_name": "市场管理员"}, {"id": 6, "task_name": "成员任务", "keywords": "名校案例", "exclude_keywords": "", "competitors": "", "platforms": "RSS", "custom_rss_urls": "http://127.0.0.1:8001/static/demo-feed.xml", "countries": "英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:20.611297", "owner_name": "市场成员"}, {"id": 5, "task_name": "自动调度RSS测试", "keywords": "申请趋势", "exclude_keywords": "", "competitors": "", "platforms": "RSS", "custom_rss_urls": "http://127.0.0.1:8001/static/demo-feed.xml", "countries": "中国香港", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:16.113532", "owner_name": "市场管理员"}, {"id": 4, "task_name": "自动调度竞品测试", "keywords": "留学", "exclude_keywords": "", "competitors": "无忧留学", "platforms": "竞品官网", "custom_rss_urls": "", "countries": "英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:11.975853", "owner_name": "市场管理员"}, {"id": 3, "task_name": "自定义RSS测试", "keywords": "香港硕士, 英国本科", "exclude_keywords": "", "competitors": "", "platforms": "RSS", "custom_rss_urls": "http://127.0.0.1:8001/static/demo-feed.xml", "countries": "中国香港, 英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:11.225619", "owner_name": "市场管理员"}, {"id": 2, "task_name": "英国本科新闻测试", "keywords": "英国本科申请", "exclude_keywords": "", "competitors": "", "platforms": "Google Search, 新闻网站, RSS", "custom_rss_urls": "", "countries": "英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:04.237699", "owner_name": "市场管理员"}, {"id": 1, "task_name": "香港硕士与竞品动态监测", "keywords": "香港留学, 港校申请, 英国硕士, 留学咨询", "exclude_keywords": "移民, 租房", "competitors": "启德留学, 新东方前途, 金吉列", "platforms": "Google Search, 新闻网站, 竞品官网, RSS", "custom_rss_urls": "", "countries": "中国香港, 英国", "frequency": "daily", "is_active": true, "last_run_at": "2026-05-18T17:09:00.113145", "owner_name": "市场管理员"}], "intelligence": [{"id": 18, "title": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "source": "无忧留学", "url": "https://www.51liuxue.com/", "summary": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "raw_content": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 19, "title": "美国留学", "source": "无忧留学", "url": "https://www.51liuxue.com/AmericaLiuxue", "summary": "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue", "raw_content": "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 20, "title": "本科留学", "source": "无忧留学", "url": "https://www.51liuxue.com/BenkeLiuxue", "summary": "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue", "raw_content": "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 21, "title": "案例列表", "source": "无忧留学", "url": "https://www.51liuxue.com/webcase", "summary": "案例列表\n来源官网链接：https://www.51liuxue.com/webcase", "raw_content": "案例列表\n来源官网链接：https://www.51liuxue.com/webcase", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 16, "title": "香港硕士申请竞争度持续上升（已编辑）", "source": "127.0.0.1:8001", "url": "https://example.com/hk-master-trend", "summary": "更新后的摘要", "raw_content": "香港硕士申请竞争度持续上升\n演示 RSS：近期香港硕士申请热度持续上升，用户关注度集中在排名、预算与录取透明度。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "relevance_score": 55, "status": "in_library", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": "2026-05-13T09:00:00"}, {"id": 17, "title": "竞品开始主推低预算英国本科方案", "source": "127.0.0.1:8001", "url": "https://example.com/uk-undergraduate-budget", "summary": "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "raw_content": "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "relevance_score": 55, "status": "later", "ai_module": "市场营销组合（4P）", "ai_sub_tag": "价格策略", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": "2026-05-13T10:00:00"}, {"id": 4, "title": "出国留学_申请留学指导_专业的留学咨询中介-启德教育", "source": "启德留学", "url": "https://www.eic.org.cn/", "summary": "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。", "raw_content": "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 5, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/au/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 6, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/uk/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 7, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/us/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 8, "title": "新东方前途出国-出国留学_留学中介_出国留学咨询", "source": "新东方前途", "url": "https://liuxue.xdf.cn/", "summary": "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同...", "raw_content": "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同类型院校申请。至今已有30年海外出国留学办理经验，已帮助万千学子成功走出国门。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 9, "title": "美国研究生", "source": "新东方前途", "url": "https://liuxue.xdf.cn/usa/postgraduate/", "summary": "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/", "raw_content": "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 10, "title": "美国中学", "source": "新东方前途", "url": "https://liuxue.xdf.cn/usa/highschool/", "summary": "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/", "raw_content": "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 11, "title": "英国中学", "source": "新东方前途", "url": "https://liuxue.xdf.cn/uk/middleschool/", "summary": "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/", "raw_content": "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 12, "title": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学", "source": "金吉列", "url": "https://www.jjl.cn/", "summary": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管...", "raw_content": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管,海外移民,签证申请,法律援助,实习就业,创业支持等服务,更多留学相关的信息就上金吉列留学官网！", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 13, "title": "留学攻略", "source": "金吉列", "url": "https://www.jjl.cn/articles", "summary": "留学攻略\n来源官网链接：https://www.jjl.cn/articles", "raw_content": "留学攻略\n来源官网链接：https://www.jjl.cn/articles", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 14, "title": "成功案例", "source": "金吉列", "url": "https://www.jjl.cn/articles/tag-留学案例", "summary": "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例", "raw_content": "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 15, "title": "签证准备", "source": "金吉列", "url": "https://www.jjl.cn/articles/tag-签证指导", "summary": "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导", "raw_content": "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 1, "title": "竞品推出低价香港硕士申请套餐", "source": "竞品官网", "url": "https://example.com/competitor-package", "summary": "某头部留学机构上线香港硕士低价套餐，并在暑期集中投放，主打高性价比和快速申请服务。", "raw_content": "某头部留学机构上线香港硕士低价套餐，并在暑期集中投放，主打高性价比和快速申请服务。", "relevance_score": 55, "status": "in_library", "ai_module": "市场营销组合（4P）", "ai_sub_tag": "价格策略", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 2, "title": "英国本科申请内容热度回升", "source": "新闻网站", "url": "https://example.com/uk-undergraduate", "summary": "近期英国本科申请相关内容搜索量上升，用户更加关注预算控制、申请节奏和排名稳定院校。", "raw_content": "近期英国本科申请相关内容搜索量上升，用户更加关注预算控制、申请节奏和排名稳定院校。", "relevance_score": 55, "status": "in_library", "ai_module": "客户细分", "ai_sub_tag": "人群画像", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}, {"id": 3, "title": "顾问一线反馈：家长更关注申请透明度", "source": "手动上传", "url": "", "summary": "顾问团队反馈，近期低龄留学家庭对服务过程透明度和名校录取案例真实性关注明显增强。", "raw_content": "顾问团队反馈，近期低龄留学家庭对服务过程透明度和名校录取案例真实性关注明显增强。", "relevance_score": 55, "status": "in_library", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null}], "library": [{"id": 4, "raw_intelligence_id": 16, "title": "香港硕士申请竞争度持续上升（已编辑）", "module": "市场洞察", "sub_tag": "行业趋势", "source": "127.0.0.1:8001", "competitor": "启德留学", "country": "中国香港", "importance_level": "high", "ai_analysis": "更新后的洞察分析"}, {"id": 1, "raw_intelligence_id": 1, "title": "竞品推出低价香港硕士申请套餐", "module": "市场营销组合（4P）", "sub_tag": "价格策略", "source": "竞品官网", "competitor": "启德留学", "country": "中国香港", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"}, {"id": 2, "raw_intelligence_id": 2, "title": "英国本科申请内容热度回升", "module": "客户细分", "sub_tag": "人群画像", "source": "新闻网站", "competitor": "", "country": "英国", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"}, {"id": 3, "raw_intelligence_id": 3, "title": "顾问一线反馈：家长更关注申请透明度", "module": "市场洞察", "sub_tag": "行业趋势", "source": "手动上传", "competitor": "", "country": "英国", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"}], "reports": {"monthly": {"month": "2026-05", "content": "# 2026-05 月度市场情报报告\n\n## 本月核心结论\n- 留学行业的重点变化集中在竞品动作、用户决策因素和传播策略。\n- 值得重点跟踪的情报应优先落到 8 大模块中，方便持续复盘与应用。\n\n## 市场洞察\n- 香港硕士申请竞争度持续上升（已编辑）（行业趋势）\n- 顾问一线反馈：家长更关注申请透明度（行业趋势）\n\n## 客户细分\n- 英国本科申请内容热度回升（人群画像）\n\n## 目标客户选择\n- 本月暂无重点情报\n\n## 定位与品牌\n- 本月暂无重点情报\n\n## 市场营销组合（4P）\n- 竞品推出低价香港硕士申请套餐（价格策略）\n\n## 量化指标与结果追踪\n- 本月暂无重点情报\n\n## 团队架构与考核指标\n- 本月暂无重点情报\n\n## 黑客增长\n- 本月暂无重点情报\n\n## 机会点\n- 从高价值情报中提炼可复用打法，快速形成测试动作。\n- 用模块化归库方式沉淀用户、竞品、品牌与传播经验。\n\n## 风险点\n- 只抓取不归库会导致情报无法真正沉淀为可执行方法。\n- 模块判断不一致会影响后续周报与月报的横向比较。\n\n## 下月行动建议\n- 每周复盘高价值情报，输出可执行动作与负责人。\n- 按 8 大模块建立持续观察清单和关键词更新机制。"}, "weekly": {"label": "2026-W20", "content": "# 2026-W20 周度 2026-W20 周度市场情报报告\n\n## 本月核心结论\n- 留学行业的重点变化集中在竞品动作、用户决策因素和传播策略。\n- 值得重点跟踪的情报应优先落到 8 大模块中，方便持续复盘与应用。\n\n## 市场洞察\n- 香港硕士申请竞争度持续上升（已编辑）（行业趋势）\n- 顾问一线反馈：家长更关注申请透明度（行业趋势）\n\n## 客户细分\n- 英国本科申请内容热度回升（人群画像）\n\n## 目标客户选择\n- 本月暂无重点情报\n\n## 定位与品牌\n- 本月暂无重点情报\n\n## 市场营销组合（4P）\n- 竞品推出低价香港硕士申请套餐（价格策略）\n\n## 量化指标与结果追踪\n- 本月暂无重点情报\n\n## 团队架构与考核指标\n- 本月暂无重点情报\n\n## 黑客增长\n- 本月暂无重点情报\n\n## 机会点\n- 从高价值情报中提炼可复用打法，快速形成测试动作。\n- 用模块化归库方式沉淀用户、竞品、品牌与传播经验。\n\n## 风险点\n- 只抓取不归库会导致情报无法真正沉淀为可执行方法。\n- 模块判断不一致会影响后续周报与月报的横向比较。\n\n## 下月行动建议\n- 每周复盘高价值情报，输出可执行动作与负责人。\n- 按 8 大模块建立持续观察清单和关键词更新机制。"}}, "initial_analysis": {"id": 18, "title": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "source": "无忧留学", "url": "https://www.51liuxue.com/", "raw_content": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "summary": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "来源渠道：无忧留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。"]}}}, "intelligence_details": {"18": {"id": 18, "title": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "source": "无忧留学", "url": "https://www.51liuxue.com/", "raw_content": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "summary": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学", "来源渠道：无忧留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "无忧留学2025｜英美澳加港澳新留学申请｜30年专注海外升学\n无忧留学2025年专注英美澳加等10国留学申请服务，30年专业团队助力本科/硕士/博士升学，成功率98.7%。立即咨询获取个性化留学方案。"]}}, "19": {"id": 19, "title": "美国留学", "source": "无忧留学", "url": "https://www.51liuxue.com/AmericaLiuxue", "raw_content": "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue", "summary": "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：美国留学", "来源渠道：无忧留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "美国留学\n来源官网链接：https://www.51liuxue.com/AmericaLiuxue"]}}, "20": {"id": 20, "title": "本科留学", "source": "无忧留学", "url": "https://www.51liuxue.com/BenkeLiuxue", "raw_content": "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue", "summary": "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：本科留学", "来源渠道：无忧留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "本科留学\n来源官网链接：https://www.51liuxue.com/BenkeLiuxue"]}}, "21": {"id": 21, "title": "案例列表", "source": "无忧留学", "url": "https://www.51liuxue.com/webcase", "raw_content": "案例列表\n来源官网链接：https://www.51liuxue.com/webcase", "summary": "案例列表\n来源官网链接：https://www.51liuxue.com/webcase", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：案例列表", "来源渠道：无忧留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "案例列表\n来源官网链接：https://www.51liuxue.com/webcase", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "案例列表\n来源官网链接：https://www.51liuxue.com/webcase"]}}, "16": {"id": 16, "title": "香港硕士申请竞争度持续上升（已编辑）", "source": "127.0.0.1:8001", "url": "https://example.com/hk-master-trend", "raw_content": "香港硕士申请竞争度持续上升\n演示 RSS：近期香港硕士申请热度持续上升，用户关注度集中在排名、预算与录取透明度。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "summary": "更新后的摘要", "relevance_score": 55, "status": "in_library", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": "2026-05-13T09:00:00", "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "启德留学", "country": "中国香港", "importance_level": "high", "ai_analysis": "更新后的洞察分析", "user_note": "这是编辑后的备注"}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：香港硕士申请竞争度持续上升（已编辑）", "来源渠道：127.0.0.1:8001", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "更新后的摘要", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "更新后的洞察分析"]}}, "17": {"id": 17, "title": "竞品开始主推低预算英国本科方案", "source": "127.0.0.1:8001", "url": "https://example.com/uk-undergraduate-budget", "raw_content": "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "summary": "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "relevance_score": 55, "status": "later", "ai_module": "市场营销组合（4P）", "ai_sub_tag": "价格策略", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": "2026-05-13T10:00:00", "library": {"module": "市场营销组合（4P）", "sub_tag": "价格策略", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场营销组合（4P）", "headline": "建议优先从「市场营销组合（4P）」视角解读这条情报", "key_information": ["情报标题：竞品开始主推低预算英国本科方案", "来源渠道：127.0.0.1:8001", "推荐归属：市场营销组合（4P） / 价格策略", "价值评分：55"], "summary": "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场营销组合（4P）策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场营销组合（4P）」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：产品包设计库、价格策略清单、渠道策略库、传播动作案例库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["通过产品、价格、渠道、促销四个动作面兑现品牌承诺，把定位真正落到执行层。", "竞品开始主推低预算英国本科方案\n演示 RSS：某竞品开始通过内容投放和价格策略推广低预算英国本科申请方案。\n来源 RSS：http://127.0.0.1:8001/static/demo-feed.xml"]}}, "4": {"id": 4, "title": "出国留学_申请留学指导_专业的留学咨询中介-启德教育", "source": "启德留学", "url": "https://www.eic.org.cn/", "raw_content": "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。", "summary": "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：出国留学_申请留学指导_专业的留学咨询中介-启德教育", "来源渠道：启德留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "出国留学_申请留学指导_专业的留学咨询中介-启德教育\n启德教育为学子提供一站式出国留学服务，雄厚的国际教育资源优势，提供出国留学、海外留学咨询、留学签证服务、国际学校咨询等留学全产业链优质服务，致力成为\"值得信赖的国际机构。"]}}, "5": {"id": 5, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/au/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：高中", "来源渠道：启德留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "高中\n来源官网链接：https://www.eic.org.cn/country/au/highschool"]}}, "6": {"id": 6, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/uk/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：高中", "来源渠道：启德留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "高中\n来源官网链接：https://www.eic.org.cn/country/uk/highschool"]}}, "7": {"id": 7, "title": "高中", "source": "启德留学", "url": "https://www.eic.org.cn/country/us/highschool", "raw_content": "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool", "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：高中", "来源渠道：启德留学", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "高中\n来源官网链接：https://www.eic.org.cn/country/us/highschool"]}}, "8": {"id": 8, "title": "新东方前途出国-出国留学_留学中介_出国留学咨询", "source": "新东方前途", "url": "https://liuxue.xdf.cn/", "raw_content": "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同类型院校申请。至今已有30年海外出国留学办理经验，已帮助万千学子成功走出国门。", "summary": "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同...", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：新东方前途出国-出国留学_留学中介_出国留学咨询", "来源渠道：新东方前途", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同...", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "新东方前途出国-出国留学_留学中介_出国留学咨询\n新东方前途出国成立于1996年，是新东方旗下从事出国留学服务的专职机构，提供“一站式”出国留学咨询服务。为您解读出国留学的条件、费用、流程及申请时间等问题，量身定制留学方案，满足各类学生不同类型院校申请。至今已有30年海外出国留学办理经验，已帮助万千学子成功走出国门。"]}}, "9": {"id": 9, "title": "美国研究生", "source": "新东方前途", "url": "https://liuxue.xdf.cn/usa/postgraduate/", "raw_content": "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/", "summary": "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：美国研究生", "来源渠道：新东方前途", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "美国研究生\n来源官网链接：https://liuxue.xdf.cn/usa/postgraduate/"]}}, "10": {"id": 10, "title": "美国中学", "source": "新东方前途", "url": "https://liuxue.xdf.cn/usa/highschool/", "raw_content": "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/", "summary": "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：美国中学", "来源渠道：新东方前途", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "美国中学\n来源官网链接：https://liuxue.xdf.cn/usa/highschool/"]}}, "11": {"id": 11, "title": "英国中学", "source": "新东方前途", "url": "https://liuxue.xdf.cn/uk/middleschool/", "raw_content": "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/", "summary": "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：英国中学", "来源渠道：新东方前途", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "英国中学\n来源官网链接：https://liuxue.xdf.cn/uk/middleschool/"]}}, "12": {"id": 12, "title": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学", "source": "金吉列", "url": "https://www.jjl.cn/", "raw_content": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管,海外移民,签证申请,法律援助,实习就业,创业支持等服务,更多留学相关的信息就上金吉列留学官网！", "summary": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管...", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学", "来源渠道：金吉列", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管...", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "出国留学_留学申请_出国留学咨询_留学机构_出国留学中介-金吉列留学\n【金吉列留学中介机构】,为您提供留学服务,背景提升,国际课程,语言培训,小语种培训,留学公司,背景提升,学术辅导,学分课程,语言培训,艺术作品集,海外短期体验营,海外托管,海外移民,签证申请,法律援助,实习就业,创业支持等服务,更多留学相关的信息就上"]}}, "13": {"id": 13, "title": "留学攻略", "source": "金吉列", "url": "https://www.jjl.cn/articles", "raw_content": "留学攻略\n来源官网链接：https://www.jjl.cn/articles", "summary": "留学攻略\n来源官网链接：https://www.jjl.cn/articles", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：留学攻略", "来源渠道：金吉列", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "留学攻略\n来源官网链接：https://www.jjl.cn/articles", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "留学攻略\n来源官网链接：https://www.jjl.cn/articles"]}}, "14": {"id": 14, "title": "成功案例", "source": "金吉列", "url": "https://www.jjl.cn/articles/tag-留学案例", "raw_content": "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例", "summary": "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：成功案例", "来源渠道：金吉列", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "成功案例\n来源官网链接：https://www.jjl.cn/articles/tag-留学案例"]}}, "15": {"id": 15, "title": "签证准备", "source": "金吉列", "url": "https://www.jjl.cn/articles/tag-签证指导", "raw_content": "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导", "summary": "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导", "relevance_score": 55, "status": "pending_review", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "", "importance_level": "", "ai_analysis": "", "user_note": ""}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：签证准备", "来源渠道：金吉列", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "签证准备\n来源官网链接：https://www.jjl.cn/articles/tag-签证指导"]}}, "1": {"id": 1, "title": "竞品推出低价香港硕士申请套餐", "source": "竞品官网", "url": "https://example.com/competitor-package", "raw_content": "某头部留学机构上线香港硕士低价套餐，并在暑期集中投放，主打高性价比和快速申请服务。", "summary": "某头部留学机构上线香港硕士低价套餐，并在暑期集中投放，主打高性价比和快速申请服务。", "relevance_score": 55, "status": "in_library", "ai_module": "市场营销组合（4P）", "ai_sub_tag": "价格策略", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场营销组合（4P）", "sub_tag": "价格策略", "competitor": "启德留学", "country": "中国香港", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。", "user_note": "演示数据，可在真实业务中由市场同学补充备注。"}, "analysis_center": {"module": "市场营销组合（4P）", "headline": "建议优先从「市场营销组合（4P）」视角解读这条情报", "key_information": ["情报标题：竞品推出低价香港硕士申请套餐", "来源渠道：竞品官网", "推荐归属：市场营销组合（4P） / 价格策略", "价值评分：55"], "summary": "某头部留学机构上线香港硕士低价套餐，并在暑期集中投放，主打高性价比和快速申请服务。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场营销组合（4P）策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场营销组合（4P）」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：产品包设计库、价格策略清单、渠道策略库、传播动作案例库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["通过产品、价格、渠道、促销四个动作面兑现品牌承诺，把定位真正落到执行层。", "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"]}}, "2": {"id": 2, "title": "英国本科申请内容热度回升", "source": "新闻网站", "url": "https://example.com/uk-undergraduate", "raw_content": "近期英国本科申请相关内容搜索量上升，用户更加关注预算控制、申请节奏和排名稳定院校。", "summary": "近期英国本科申请相关内容搜索量上升，用户更加关注预算控制、申请节奏和排名稳定院校。", "relevance_score": 55, "status": "in_library", "ai_module": "客户细分", "ai_sub_tag": "人群画像", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "客户细分", "sub_tag": "人群画像", "competitor": "", "country": "英国", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。", "user_note": "演示数据，可在真实业务中由市场同学补充备注。"}, "analysis_center": {"module": "客户细分", "headline": "建议优先从「客户细分」视角解读这条情报", "key_information": ["情报标题：英国本科申请内容热度回升", "来源渠道：新闻网站", "推荐归属：客户细分 / 人群画像", "价值评分：55"], "summary": "近期英国本科申请相关内容搜索量上升，用户更加关注预算控制、申请节奏和排名稳定院校。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的客户细分策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「客户细分」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：细分人群画像库、需求清单、决策链路档案", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["分清不同预算、年龄、目的地和决策阶段的人群，避免用一套话术覆盖所有用户。", "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"]}}, "3": {"id": 3, "title": "顾问一线反馈：家长更关注申请透明度", "source": "手动上传", "url": "", "raw_content": "顾问团队反馈，近期低龄留学家庭对服务过程透明度和名校录取案例真实性关注明显增强。", "summary": "顾问团队反馈，近期低龄留学家庭对服务过程透明度和名校录取案例真实性关注明显增强。", "relevance_score": 55, "status": "in_library", "ai_module": "市场洞察", "ai_sub_tag": "行业趋势", "ai_reason": "基于关键词和语义规则完成初筛，建议人工复核。", "ai_confidence": 68, "published_at": null, "library": {"module": "市场洞察", "sub_tag": "行业趋势", "competitor": "", "country": "英国", "importance_level": "medium", "ai_analysis": "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。", "user_note": "演示数据，可在真实业务中由市场同学补充备注。"}, "analysis_center": {"module": "市场洞察", "headline": "建议优先从「市场洞察」视角解读这条情报", "key_information": ["情报标题：顾问一线反馈：家长更关注申请透明度", "来源渠道：手动上传", "推荐归属：市场洞察 / 行业趋势", "价值评分：55"], "summary": "顾问团队反馈，近期低龄留学家庭对服务过程透明度和名校录取案例真实性关注明显增强。", "inspirations": ["基于关键词和语义规则完成初筛，建议人工复核。", "可以进一步追问：这条变化会如何影响我们的市场洞察策略？"], "recommendations": ["先判断这条情报是否值得采纳，再决定是否归库。", "若采纳，建议把它沉淀到「市场洞察」模块下，方便后续周报和月报复盘。"], "knowledge_assets": ["可沉淀知识库：宏观环境台账、波特五力研判表、竞品SWOT档案、目标客户需求观察库", "建议补充：适用场景、对应人群、可复用动作、验证指标。"], "learning_points": ["先用 PEST 看外部环境，再用波特五力看行业结构，用 SWOT 看竞争者，最后回到目标客户最新需求。", "1. 这条信息反映了留学行业近期的市场动作。\n2. 说明目标用户需求或竞品策略正在变化。\n3. 建议结合国家、项目、价格与渠道做进一步判断。\n4. 可以用于月报和竞品追踪。"]}}}};
+const dashboardCards = document.querySelector("#dashboard-cards");
+const tasksTable = document.querySelector("#tasks-table");
+const intelligenceList = document.querySelector("#intelligence-list");
+const libraryList = document.querySelector("#library-list");
+const reportContent = document.querySelector("#report-content");
+const manualResult = document.querySelector("#manual-result");
+const taskRunResult = document.querySelector("#task-run-result");
+const tasksSummary = document.querySelector("#tasks-summary");
+const intelligenceFilterForm = document.querySelector("#intelligence-filter-form");
+const resetFilterButton = document.querySelector("#reset-filter-button");
+const reportExportLink = document.querySelector("#report-export-link");
+const weeklyReportButton = document.querySelector("#weekly-report-button");
+const monthlyReportButton = document.querySelector("#monthly-report-button");
+const weeklyReportExportLink = document.querySelector("#weekly-report-export-link");
+const marketingModuleBoard = document.querySelector("#marketing-module-board");
+const marketingModuleCurrent = document.querySelector("#marketing-module-current");
+const marketingModuleDetail = document.querySelector("#marketing-module-detail");
+const analysisCenter = document.querySelector("#analysis-center");
+const manualEntryType = document.querySelector("#manual-entry-type");
+const manualLinkFields = document.querySelector("#manual-link-fields");
+const manualImageFields = document.querySelector("#manual-image-fields");
+const manualVoiceFields = document.querySelector("#manual-voice-fields");
+
+const staticData = window.__STATIC_EXPORT_DATA__ || {};
+const snapshot = staticData.snapshot || {};
+const intelligenceDetails = staticData.intelligence_details || {};
+let currentIntelligenceFilters = {};
+
+const MARKETING_MODULE_META = [
+  {
+    name: "市场洞察",
+    index: "01",
+    icon: "🧭",
+    subtitle: "Market Insight",
+    prompt: "先理解宏观环境、行业、竞争者与目标客户，回答“市场正在发生什么变化”。",
+    meaning: "模块1的目的，是帮助我们完整理解外部市场。它包含宏观环境洞察、行业洞察、竞争者洞察和目标客户洞察四部分。",
+    dimensions: ["宏观环境洞察：PEST", "行业洞察：波特五力模型", "竞争者洞察：SWOT分析", "目标客户洞察：客户最新需求"],
+    mece: "模块1负责看市场全貌，不直接承担客户细分、目标市场选择、品牌定位和4P执行。",
+    accent: "cyan",
+  },
+  {
+    name: "客户细分",
+    index: "02",
+    icon: "👥",
+    subtitle: "Customer Segmentation",
+    prompt: "把客户按标签和维度切开，回答“客户为什么不能被当成同一种人来服务”。",
+    meaning: "客户是多样化的，我们需要根据不同标签和维度进行细分，形成可识别、可服务、可比较的人群分组。",
+    dimensions: ["基础属性：年龄 / 地区 / 学历", "需求属性：国家 / 项目 /预算", "行为属性：咨询阶段 / 决策周期", "心理属性：关注点 / 风险偏好"],
+    mece: "模块2只负责把客户切分清楚，不负责决定优先服务谁。",
+    accent: "fuchsia",
+  },
+  {
+    name: "目标客户选择",
+    index: "03",
+    icon: "🎯",
+    subtitle: "Target Market Selection",
+    prompt: "从若干细分市场中找出最有利可图的部分，回答“我们只服务谁”。",
+    meaning: "模块3的核心，是从多个客户细分市场中选择一个或几个最有价值、最值得集中资源服务的目标市场。",
+    dimensions: ["市场吸引力", "客户价值", "竞争强度", "公司资源匹配度"],
+    mece: "模块3只做“选谁”，不直接回答“怎么占位”或“怎么执行4P”。",
+    accent: "amber",
+  },
+  {
+    name: "定位与品牌",
+    index: "04",
+    icon: "🏛️",
+    subtitle: "Positioning & Brand",
+    prompt: "在客户心智里占一个差异化位置，并明确我们给客户的品牌承诺。",
+    meaning: "定位是决定我们要占领客户心智中的哪个位置，品牌则是把这种位置转成具体的功能利益和情感利益承诺。",
+    dimensions: ["定位：差异化位置", "功能利益承诺", "情感利益承诺", "品牌表达与心智占位"],
+    mece: "模块4只回答“我们是谁、我们代表什么”，不直接承担4P落地动作。",
+    accent: "emerald",
+  },
+  {
+    name: "市场营销组合（4P）",
+    index: "05",
+    icon: "📦",
+    subtitle: "Marketing Mix · 4P",
+    prompt: "通过产品、价格、渠道、促销兑现我们的品牌承诺，回答“具体怎么做”。",
+    meaning: "市场营销组合就是产品、价格、渠道和促销。模块5是把前面的目标市场和定位，落地成具体动作组合。",
+    dimensions: ["Product：产品", "Price：价格", "Place：渠道", "Promotion：促销"],
+    mece: "模块5负责执行策略组合，不负责定义目标客户或品牌定位本身。",
+    accent: "violet",
+  },
+  {
+    name: "量化指标与结果追踪",
+    index: "06",
+    icon: "📈",
+    subtitle: "Performance Tracking",
+    prompt: "为市场营销工作建立导航系统，回答“目标是什么、过程如何、结果怎样”。",
+    meaning: "模块6的核心是设定目标，并持续追踪过程指标和结果指标，让市场工作可衡量、可优化、可复盘。",
+    dimensions: ["目标设定", "过程指标", "结果指标", "复盘与优化"],
+    mece: "模块6只负责建立导航系统和追踪结果，不代替策略本身。",
+    accent: "sky",
+  },
+  {
+    name: "团队架构与考核指标",
+    index: "07",
+    icon: "🏗️",
+    subtitle: "Team & KPI",
+    prompt: "为市场营销工作建立对应团队，并用考核指标激发团队使命必达。",
+    meaning: "模块7关注组织与机制，包括岗位分工、团队协同、目标拆解和考核指标设计。",
+    dimensions: ["团队配置", "职责分工", "协同流程", "考核与激励"],
+    mece: "模块7负责组织保障，不直接代替市场策略和增长实验。",
+    accent: "rose",
+  },
+  {
+    name: "黑客增长",
+    index: "08",
+    icon: "🚀",
+    subtitle: "Growth Hacking",
+    prompt: "用高速度、跨职能测试驱动增长，提升市场营销各环节的效率。",
+    meaning: "模块8关注的是快速试错、跨职能协作和高效率增长动作，把增长建立在持续测试上。",
+    dimensions: ["高速度实验", "跨职能协作", "测试驱动增长", "效率提升机制"],
+    mece: "模块8聚焦增长实验，不替代基础4P和常规组织机制。",
+    accent: "lime",
+  },
+];
+
+function getModuleTone(meta, selected = false) {
+  const toneMap = {
+    cyan: {
+      container: selected ? "border-cyan-400 bg-cyan-500/10 text-cyan-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-cyan-500/40",
+      badge: "border-cyan-500/30 bg-cyan-500/10 text-cyan-200",
+    },
+    fuchsia: {
+      container: selected ? "border-fuchsia-400 bg-fuchsia-500/10 text-fuchsia-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-fuchsia-500/40",
+      badge: "border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-200",
+    },
+    amber: {
+      container: selected ? "border-amber-400 bg-amber-500/10 text-amber-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-amber-500/40",
+      badge: "border-amber-500/30 bg-amber-500/10 text-amber-200",
+    },
+    emerald: {
+      container: selected ? "border-emerald-400 bg-emerald-500/10 text-emerald-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-emerald-500/40",
+      badge: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
+    },
+    violet: {
+      container: selected ? "border-violet-400 bg-violet-500/10 text-violet-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-violet-500/40",
+      badge: "border-violet-500/30 bg-violet-500/10 text-violet-200",
+    },
+    sky: {
+      container: selected ? "border-sky-400 bg-sky-500/10 text-sky-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-sky-500/40",
+      badge: "border-sky-500/30 bg-sky-500/10 text-sky-200",
+    },
+    rose: {
+      container: selected ? "border-rose-400 bg-rose-500/10 text-rose-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-rose-500/40",
+      badge: "border-rose-500/30 bg-rose-500/10 text-rose-200",
+    },
+    lime: {
+      container: selected ? "border-lime-400 bg-lime-500/10 text-lime-50" : "border-slate-800 bg-slate-950/50 text-slate-200 hover:border-lime-500/40",
+      badge: "border-lime-500/30 bg-lime-500/10 text-lime-200",
+    },
+  };
+  return toneMap[meta.accent] || toneMap.cyan;
+}
+
+function getStatusLabel(status) {
+  if (status === "in_library") return "已入库";
+  if (status === "ignored") return "已忽略";
+  if (status === "later") return "稍后处理";
+  return "待确认";
+}
+
+function disableInteractiveSections() {
+  document.querySelectorAll("#task-form input, #task-form select, #task-form textarea, #manual-form input, #manual-form select, #manual-form textarea").forEach((field) => {
+    field.disabled = true;
+    field.readOnly = true;
+  });
+  document.querySelectorAll("#task-form button, #manual-form button, #seed-button").forEach((button) => {
+    button.disabled = true;
+    button.classList.add("opacity-60", "cursor-not-allowed");
+  });
+  if (taskRunResult) {
+    taskRunResult.classList.remove("hidden");
+    taskRunResult.textContent = "当前为静态展示包，任务创建、抓取、编辑等操作已关闭。";
+  }
+  if (manualResult) {
+    manualResult.classList.remove("hidden");
+    manualResult.textContent = "当前为静态展示包，手动录入和 AI 分析写入已关闭；页面仅用于浏览和演示。";
+  }
+  if (reportExportLink) {
+    reportExportLink.removeAttribute("href");
+    reportExportLink.classList.add("opacity-60", "cursor-not-allowed");
+    reportExportLink.textContent = "静态版不导出";
+  }
+  if (weeklyReportExportLink) {
+    weeklyReportExportLink.removeAttribute("href");
+    weeklyReportExportLink.classList.add("opacity-60", "cursor-not-allowed");
+    weeklyReportExportLink.textContent = "静态版不导出";
+  }
+}
+
+function syncManualEntryFields() {
+  if (!manualEntryType) return;
+  const mode = manualEntryType.value;
+  if (manualLinkFields) manualLinkFields.classList.toggle("hidden", mode !== "link");
+  if (manualImageFields) manualImageFields.classList.toggle("hidden", mode !== "image");
+  if (manualVoiceFields) manualVoiceFields.classList.toggle("hidden", mode !== "voice");
+}
+
+function renderDashboard(data) {
+  const cards = [
+    ["今日抓取情报", data.today_count || 0],
+    ["待确认情报", data.pending_count || 0],
+    ["已入库情报", data.library_count || 0],
+    ["本月新增情报", data.monthly_count || 0],
+  ];
+  dashboardCards.innerHTML = cards
+    .map(
+      ([label, value]) => `
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <p class="text-sm text-slate-400">${label}</p>
+          <p class="mt-3 text-3xl font-semibold text-white">${value}</p>
+        </div>
+      `
+    )
+    .join("");
+
+  const keywordCard = `
+    <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5 md:col-span-2 xl:col-span-4">
+      <p class="text-sm text-cyan-200">热门关键词</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        ${(data.hot_keywords || []).map((keyword) => `<span class="rounded-full border border-cyan-500/30 px-3 py-1 text-sm text-cyan-100">${keyword}</span>`).join("")}
+      </div>
+    </div>
+  `;
+  dashboardCards.insertAdjacentHTML("beforeend", keywordCard);
+}
+
+function renderMarketingModules(items) {
+  if (!marketingModuleBoard) return;
+  const selectedModule = currentIntelligenceFilters.module || MARKETING_MODULE_META[0].name;
+  if (marketingModuleCurrent) {
+    marketingModuleCurrent.textContent = `当前查看：${selectedModule}`;
+  }
+  marketingModuleBoard.innerHTML = items
+    .map((item) => {
+      const meta = MARKETING_MODULE_META.find((entry) => entry.name === item.name) || MARKETING_MODULE_META[0];
+      const tone = getModuleTone(meta, selectedModule === item.name);
+      return `
+        <button type="button" class="flex w-full items-start justify-between gap-3 rounded-2xl border px-4 py-4 text-left transition ${tone.container}" data-module-board-item="${item.name}">
+          <div class="flex min-w-0 flex-1 items-center gap-3">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">${meta.icon}</span>
+            <div class="min-w-0">
+              <p class="text-lg font-semibold whitespace-nowrap">${meta.index}-${item.name}</p>
+              <p class="text-xs text-slate-400">${meta.subtitle}</p>
+            </div>
+          </div>
+          <div class="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center">
+            <span class="rounded-full border px-3 py-1 text-xs ${tone.badge}">待确认 ${item.pending_count}</span>
+            <span class="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">${item.count} 条</span>
+          </div>
+        </button>
+      `;
+    })
+    .join("");
+
+  const activeItem = items.find((item) => item.name === selectedModule) || items[0];
+  if (activeItem && marketingModuleDetail) {
+    const meta = MARKETING_MODULE_META.find((entry) => entry.name === activeItem.name) || MARKETING_MODULE_META[0];
+    const tone = getModuleTone(meta, true);
+    const latestItems = activeItem.latest_items || [];
+    marketingModuleDetail.innerHTML = `
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-2xl">${meta.icon}</span>
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Module ${meta.index}</p>
+              <h3 class="mt-1 text-2xl font-semibold text-white">${meta.name}</h3>
+            </div>
+          </div>
+          <p class="mt-4 text-sm leading-6 text-slate-300">${meta.prompt}</p>
+        </div>
+        <div class="flex gap-2">
+          <span class="rounded-full border px-3 py-1 text-xs ${tone.badge}">累计 ${activeItem.count} 条</span>
+          <span class="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">待确认 ${activeItem.pending_count}</span>
+        </div>
+      </div>
+      <div class="mt-5 grid gap-4 lg:grid-cols-2">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p class="text-sm font-medium text-white">模块含义</p>
+          <p class="mt-3 text-sm leading-6 text-slate-300">${meta.meaning}</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p class="text-sm font-medium text-white">MECE 边界</p>
+          <p class="mt-3 text-sm leading-6 text-slate-300">${meta.mece}</p>
+        </div>
+      </div>
+      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <p class="text-sm font-medium text-white">推荐子维度</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${meta.dimensions.map((dimension) => `<span class="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">${dimension}</span>`).join("")}
+        </div>
+      </div>
+      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-sm font-medium text-white">该模块最新情报</p>
+          <button type="button" class="button-secondary px-3 py-2 text-xs" data-module-focus="${activeItem.name}">筛选该模块</button>
+        </div>
+        <div class="mt-3 space-y-2">
+          ${
+            latestItems.length
+              ? latestItems
+                  .map(
+                    (entry) => `
+                      <div class="rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-3 text-xs text-slate-300">
+                        <div class="truncate text-sm text-slate-100">${entry.title}</div>
+                        <div class="mt-1 flex items-center justify-between text-slate-500">
+                          <span>评分 ${entry.relevance_score}</span>
+                          <span>${getStatusLabel(entry.status)}</span>
+                        </div>
+                      </div>
+                    `
+                  )
+                  .join("")
+              : `<div class="rounded-xl border border-dashed border-slate-800 bg-slate-950/40 px-3 py-3 text-xs text-slate-500">暂无该模块情报</div>`
+          }
+        </div>
+      </div>
+    `;
+
+    marketingModuleDetail.querySelector("[data-module-focus]")?.addEventListener("click", () => {
+      currentIntelligenceFilters.module = activeItem.name;
+      if (intelligenceFilterForm) intelligenceFilterForm.module.value = activeItem.name;
+      renderSnapshot();
+      intelligenceList.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  marketingModuleBoard.querySelectorAll("[data-module-board-item]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const selected = button.dataset.moduleBoardItem;
+      currentIntelligenceFilters.module = selected;
+      if (intelligenceFilterForm) intelligenceFilterForm.module.value = selected;
+      renderSnapshot();
+    });
+  });
+}
+
+function renderTasks(tasks) {
+  const visibleTasks = tasks.slice(0, 4);
+  if (tasksSummary) {
+    const hiddenCount = Math.max(tasks.length - visibleTasks.length, 0);
+    tasksSummary.textContent = hiddenCount > 0 ? `任务列表仅展示最近 4 条，当前还有 ${hiddenCount} 条未展开。` : "当前任务列表已完整展示。";
+  }
+  tasksTable.innerHTML = visibleTasks
+    .map(
+      (task) => `
+        <tr class="border-t border-slate-800">
+          <td class="py-3 pr-4">${task.task_name}</td>
+          <td class="py-3 pr-4 text-slate-300">
+            <div>${task.keywords}</div>
+            ${task.custom_rss_urls ? `<div class="mt-1 text-xs text-cyan-300">RSS：已配置</div>` : ""}
+          </td>
+          <td class="py-3 pr-4 text-slate-300">${task.competitors || "-"}</td>
+          <td class="py-3 pr-4">${task.frequency === "daily" ? "每日" : "每周"}</td>
+          <td class="py-3 pr-4 text-slate-400">${task.last_run_at ? new Date(task.last_run_at).toLocaleString("zh-CN") : "未执行"}</td>
+          <td class="py-3 pr-4">${task.is_active ? "启用中" : "已停用"}</td>
+          <td class="py-3 pr-4">
+            <span class="rounded-full border border-slate-700 px-3 py-2 text-xs text-slate-400">静态展示</span>
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+function renderAnalysisCenter(data) {
+  if (!analysisCenter) return;
+  if (!data) {
+    analysisCenter.innerHTML = `
+      <div class="rounded-xl border border-dashed border-slate-700 p-4 text-slate-400">
+        暂无分析内容。你可以点击待处理情报中的“查看分析”来切换展示。
+      </div>
+    `;
+    return;
+  }
+  analysisCenter.innerHTML = `
+    <div class="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
+      <p class="text-xs uppercase tracking-[0.2em] text-cyan-300">AI Analysis Center</p>
+      <h3 class="mt-2 text-lg font-semibold text-white">${data.headline || "情报分析结果"}</h3>
+      <p class="mt-3 text-sm leading-6 text-slate-300">${data.summary || "-"}</p>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2">
+      <section class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <p class="text-sm font-medium text-white">关键信息提取</p>
+        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+          ${(data.key_information || []).map((item) => `<li>• ${item}</li>`).join("")}
+        </ul>
+      </section>
+      <section class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <p class="text-sm font-medium text-white">带来的启发</p>
+        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+          ${(data.inspirations || []).map((item) => `<li>• ${item}</li>`).join("")}
+        </ul>
+      </section>
+      <section class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <p class="text-sm font-medium text-white">对我们的建议</p>
+        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+          ${(data.recommendations || []).map((item) => `<li>• ${item}</li>`).join("")}
+        </ul>
+      </section>
+      <section class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <p class="text-sm font-medium text-white">可沉淀的知识库</p>
+        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+          ${(data.knowledge_assets || []).map((item) => `<li>• ${item}</li>`).join("")}
+        </ul>
+      </section>
+    </div>
+    <section class="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+      <p class="text-sm font-medium text-white">值得学习借鉴的点</p>
+      <ul class="mt-3 space-y-2 text-sm text-slate-300">
+        ${(data.learning_points || []).map((item) => `<li>• ${item}</li>`).join("")}
+      </ul>
+    </section>
+  `;
+}
+
+function renderIntelligence(items) {
+  const visibleItems = items.slice(0, 4);
+  intelligenceList.innerHTML = visibleItems
+    .map(
+      (item) => `
+        <article class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">${item.source}</p>
+              <h3 class="mt-2 text-lg font-semibold">${item.title}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-300">${item.summary}</p>
+              <p class="mt-3 text-xs text-slate-500">状态：${getStatusLabel(item.status)}</p>
+            </div>
+            <div class="min-w-52 rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm">
+              <p>评分：<span class="font-semibold text-cyan-300">${item.relevance_score}</span></p>
+              <p class="mt-1">模块：${item.ai_module}</p>
+              <p class="mt-1">标签：${item.ai_sub_tag}</p>
+              <p class="mt-1">置信度：${item.ai_confidence}%</p>
+            </div>
+          </div>
+          <p class="mt-4 text-sm text-slate-400">${item.ai_reason}</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="button-secondary px-3 py-2 text-xs opacity-60 cursor-not-allowed">静态展示</span>
+            <button class="button-secondary px-3 py-2 text-xs intelligence-analysis-button" data-id="${item.id}">
+              查看分析
+            </button>
+          </div>
+          ${item.url ? `<a class="mt-4 inline-block text-sm text-cyan-300 hover:text-cyan-200" href="${item.url}" target="_blank" rel="noreferrer">查看原文</a>` : ""}
+        </article>
+      `
+    )
+    .join("");
+
+  document.querySelectorAll(".intelligence-analysis-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const detail = intelligenceDetails[button.dataset.id];
+      renderAnalysisCenter(detail ? detail.analysis_center : null);
+      analysisCenter?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+}
+
+function renderLibrary(items) {
+  libraryList.innerHTML = items
+    .map((item) => {
+      const cardTitle = item.sub_tag && item.sub_tag.trim() ? `${item.module} · ${item.sub_tag}` : `${item.module}知识卡片`;
+      const insightText = ((item.ai_analysis || "").trim() || "暂无知识总结").slice(0, 120);
+      return `
+        <article class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-full border border-cyan-500/30 px-2.5 py-1 text-[11px] text-cyan-200">知识卡片</span>
+                <span class="rounded-full border border-emerald-500/30 px-2.5 py-1 text-[11px] text-emerald-200">${item.module}</span>
+              </div>
+              <h3 class="mt-3 text-base font-semibold text-white">${cardTitle}</h3>
+              <p class="mt-1 text-xs text-slate-500">由已采纳情报沉淀出的市场知识资产</p>
+            </div>
+            <span class="rounded-full border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300">${item.importance_level}</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+            <p class="text-[11px] uppercase tracking-[0.18em] text-slate-500">Knowledge Insight</p>
+            <p class="mt-2 text-sm leading-6 text-slate-300">${insightText}${item.ai_analysis && item.ai_analysis.trim().length > 120 ? "..." : ""}</p>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${item.sub_tag && item.sub_tag.trim() ? `<span class="rounded-full border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300">${item.sub_tag}</span>` : ""}
+            <span class="rounded-full border border-slate-700 px-2.5 py-1 text-[11px] text-slate-400">知识沉淀完成</span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function getFilteredIntelligence() {
+  const allItems = snapshot.intelligence || [];
+  return allItems.filter((item) => {
+    if (currentIntelligenceFilters.status && item.status !== currentIntelligenceFilters.status) return false;
+    if (currentIntelligenceFilters.module && item.ai_module !== currentIntelligenceFilters.module) return false;
+    if (currentIntelligenceFilters.source && !String(item.source || "").toLowerCase().includes(currentIntelligenceFilters.source.toLowerCase())) return false;
+    if (currentIntelligenceFilters.keyword) {
+      const text = `${item.title || ""} ${item.summary || ""}`.toLowerCase();
+      if (!text.includes(currentIntelligenceFilters.keyword.toLowerCase())) return false;
+    }
+    return true;
+  });
+}
+
+function renderReport(kind) {
+  const reports = snapshot.reports || {};
+  const report = kind === "weekly" ? reports.weekly : reports.monthly;
+  reportContent.textContent = report && report.content ? report.content : "暂无报告内容";
+}
+
+function renderSnapshot() {
+  renderDashboard(snapshot.dashboard || {});
+  renderMarketingModules((snapshot.dashboard && snapshot.dashboard.marketing_modules) || []);
+  renderTasks(snapshot.tasks || []);
+  renderIntelligence(getFilteredIntelligence());
+  renderLibrary(snapshot.library || []);
+}
+
+if (intelligenceFilterForm) {
+  intelligenceFilterForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    currentIntelligenceFilters = Object.fromEntries(
+      Array.from(formData.entries()).filter(([, value]) => String(value).trim() !== "")
+    );
+    renderSnapshot();
+  });
+}
+
+if (resetFilterButton) {
+  resetFilterButton.addEventListener("click", () => {
+    currentIntelligenceFilters = {};
+    intelligenceFilterForm?.reset();
+    renderSnapshot();
+  });
+}
+
+if (monthlyReportButton) {
+  monthlyReportButton.addEventListener("click", () => renderReport("monthly"));
+}
+
+if (weeklyReportButton) {
+  weeklyReportButton.addEventListener("click", () => renderReport("weekly"));
+}
+
+if (manualEntryType) {
+  manualEntryType.addEventListener("change", syncManualEntryFields);
+}
+
+syncManualEntryFields();
+disableInteractiveSections();
+renderSnapshot();
+
+const initialAnalysis = snapshot.initial_analysis || null;
+renderAnalysisCenter(initialAnalysis ? initialAnalysis.analysis_center : null);
+renderReport("monthly");
+</script>
+  </body>
+</html>
